@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reviewdb-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reviewdb
+  template:
+    metadata:
+      labels:
+        app: reviewdb
+    spec:
+      containers:
+        - name: reviewdb
+          image: innovativeacademy/reviewdb:V1
+          resources:
+            requests:
+              memory: "300Mi"
+              cpu: "300m"
+            limits:
+              memory: "500Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 3306
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reviewdb-service
+spec:
+  selector:
+    app: reviewdb
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reviewapp-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: reviewapp
+  template:
+    metadata:
+      labels:
+        app: reviewapp
+    spec:
+      containers:
+        - name: reviewapp
+          image: DOCKER_IMAGE_PLACEHOLDER
+          resources:
+            limits:
+              memory: "300Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reviewapp-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: reviewapp
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080

@@ -45,9 +45,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-south-1
 
-            # Commented out temporarily to avoid AWS billing costs
       - name: Generate and Update Kubernetes EKS Cluster Context Kubeconfig
-        run: echo "Skipping AWS validation step until cluster is live" # aws eks update-kubeconfig --name cicd --region ap-south-1
-        
+        run: aws eks update-kubeconfig --name cicd --region ap-south-1
+
       - name: Dynamically Update Image Tag and Deploy Configurations to EKS Cluster
-        run: echo "Skipping manifest application step until cluster is live" # kubectl apply -f k8s-manifest.yaml
+        run: |
+          sed -i "s|DOCKER_IMAGE_PLACEHOLDER|${{ secrets.DOCKER_USERNAME }}/reviewapp:${{ github.run_number }}|g" k8s-manifest.yaml
+          kubectl apply -f k8s-manifest.yaml

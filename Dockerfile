@@ -1,13 +1,6 @@
-# Stage 1: Fast Build Environment
-FROM maven:3.9.6-eclipse-temurin-17 AS build
+FROM amazoncorretto:17-alpine
 WORKDIR /app
-COPY pom.xml .
-COPY src ./src
-RUN mvn clean package -DskipTests
-
-# Stage 2: Minimalist Production Image
-FROM eclipse-temurin:17-jre-alpine
-WORKDIR /app
-COPY --from=build /app/target/*.jar app.jar
+COPY target/ReviewApp-0.0.1-SNAPSHOT.jar ReviewApp-0.0.1-SNAPSHOT.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+CMD ["java","-jar","ReviewApp-0.0.1-SNAPSHOT.jar"]
+

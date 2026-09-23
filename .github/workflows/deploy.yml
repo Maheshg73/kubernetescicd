@@ -49,4 +49,4 @@ jobs:
         run: aws eks update-kubeconfig --name cicd --region ap-south-1
 
       - name: Dynamically Update Image Tag and Deploy Configurations to EKS Cluster
-        run: kubectl set deployment/reviewapp-deployment reviewapp=${{ secrets.DOCKER_USERNAME }}/reviewapp:${{ github.run_number }}
+        run: kubectl set image deployment/reviewapp-deployment reviewapp=${{ secrets.DOCKER_USERNAME }}/reviewapp:${{ github.run_number }}
